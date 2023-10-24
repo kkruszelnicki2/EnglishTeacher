@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.learnenglish.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_mainMenu"
+            app:destination="@id/mainMenu" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.learnenglish.RegisterFragment"
+        android:label="RegisterFragment" >
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_mainMenu"
+            app:destination="@id/mainMenu" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainMenu"
+        android:name="com.example.learnenglish.MainMenu"
+        android:label="main_menu"
+        tools:layout="@layout/main_menu" />
+</navigation>
