@@ -35,5 +35,16 @@
         <action
             android:id="@+id/action_mainMenu_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_mainMenu_to_settings2"
+            app:destination="@id/settings2" />
+    </fragment>
+    <fragment
+        android:id="@+id/settings2"
+        android:name="com.example.learnenglish.Settings"
+        android:label="Settings" >
+        <action
+            android:id="@+id/action_settings2_to_mainMenu"
+            app:destination="@id/mainMenu" />
     </fragment>
 </navigation>

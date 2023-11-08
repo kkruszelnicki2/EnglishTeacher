@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class RegisterFragment : Fragment() {
     private lateinit var firebaseAuth: FirebaseAuth
@@ -38,10 +39,13 @@ class RegisterFragment : Fragment() {
                     if(isValidEmail(email)) {
                         firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener{
                             if(it.isSuccessful) {
-                                val bundle = Bundle()
-                                bundle.putInt("user",1)
+                                val firebaseUser: FirebaseUser = it.result!!.user!!
 
-                                val fragment = LoginFragment()
+                                val bundle = Bundle()
+                                bundle.putString("user", firebaseUser.uid)
+                                bundle.putString("email", email)
+
+                                val fragment = MainMenu()
                                 val transaction = fragmentManager?.beginTransaction()
                                 fragment.arguments = bundle
 
