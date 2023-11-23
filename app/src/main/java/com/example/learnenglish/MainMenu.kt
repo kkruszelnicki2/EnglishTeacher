@@ -23,18 +23,22 @@ class MainMenu : Fragment() {
 
         firebaseAuth = FirebaseAuth.getInstance()
 
-        val textView : TextView = view.findViewById<TextView>(R.id.userAuthority)
-
         var authorityLvl = this.arguments?.get("user")
-        textView.text = authorityLvl.toString()
 
         val currentUser = firebaseAuth.currentUser
-        if (currentUser != null) {
-            textView.text = currentUser.isAnonymous.toString()
-            if(currentUser.isAnonymous) {
-                textView.text = "guest"
-                view.findViewById<ConstraintLayout>(R.id.createAcc).visibility = View.VISIBLE
-            }
+
+//        if (currentUser != null) {
+//            textView.text = currentUser.isAnonymous.toString()
+//            if(currentUser.isAnonymous) {
+//                textView.text = "guest"
+//                view.findViewById<ConstraintLayout>(R.id.createAcc).visibility = View.VISIBLE
+//            }
+//        }
+
+        view.findViewById<Button>(R.id.start).setOnClickListener {
+            val fragment = Levels()
+            val transaction = fragmentManager?.beginTransaction()
+            transaction?.replace(R.id.nav_controler, fragment)?.commit()
         }
 
         view.findViewById<Button>(R.id.settings).setOnClickListener {

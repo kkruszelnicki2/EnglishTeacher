@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_mainMenu_to_settings2"
             app:destination="@id/settings2" />
+        <action
+            android:id="@+id/action_mainMenu_to_levels"
+            app:destination="@id/levels" />
     </fragment>
     <fragment
         android:id="@+id/settings2"
@@ -45,6 +48,25 @@
         android:label="Settings" >
         <action
             android:id="@+id/action_settings2_to_mainMenu"
+            app:destination="@id/mainMenu" />
+    </fragment>
+    <fragment
+        android:id="@+id/levels"
+        android:name="com.example.learnenglish.Levels"
+        android:label="Levels" >
+        <action
+            android:id="@+id/action_levels_to_mainMenu"
+            app:destination="@id/mainMenu" />
+        <action
+            android:id="@+id/action_levels_to_levelFragment"
+            app:destination="@id/levelFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/levelFragment"
+        android:name="com.example.learnenglish.LevelFragment"
+        android:label="LevelFragment" >
+        <action
+            android:id="@+id/action_levelFragment_to_mainMenu"
             app:destination="@id/mainMenu" />
     </fragment>
 </navigation>
