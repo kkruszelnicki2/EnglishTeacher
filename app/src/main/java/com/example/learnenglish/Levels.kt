@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 class Levels : Fragment(), LevelClickListener {
     private lateinit var listener: LevelClickListener
     private lateinit var recyclerViewTransport: RecyclerView
+    private lateinit var recyclerViewFood: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -20,10 +21,16 @@ class Levels : Fragment(), LevelClickListener {
 
         listener = this
 
-        recyclerViewTransport = view.findViewById(R.id.recycler)
+        recyclerViewTransport = view.findViewById(R.id.recyclerTransport)
         recyclerViewTransport.layoutManager = GridLayoutManager(context,10)
         recyclerViewTransport.adapter = QuestionAdapter(requireContext(),listener,
             QuestionList.QuestionsTransport(), "Transport"
+        )
+
+        recyclerViewFood = view.findViewById(R.id.recyclerFood)
+        recyclerViewFood.layoutManager = GridLayoutManager(context,10)
+        recyclerViewFood.adapter = QuestionAdapter(requireContext(),listener,
+            QuestionList.QuestionsFood(), "Food"
         )
 
         return view

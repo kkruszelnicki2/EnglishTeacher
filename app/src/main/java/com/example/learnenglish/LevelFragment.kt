@@ -9,6 +9,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+
+class TaskModel(val transport_level : Int, val food_level: Int)
 
 class LevelFragment : Fragment() {
 
@@ -31,37 +37,39 @@ class LevelFragment : Fragment() {
             checkAnswer()
         }
 
-        view.findViewById<Button>(R.id.leave).setOnClickListener {
+        view.findViewById<Button>(R.id.leave).setOnClickListener {//return to main menu button
             val builder = AlertDialog.Builder(requireContext())
-            builder.setMessage("Na pewno chcesz wyjść? Niezapisane postępy zostaną utracone!")
-                .setPositiveButton("Tak") { _, _ ->
+            builder.setMessage("Na pewno chcesz wyjść? Niezapisane postępy zostaną utracone!") //notification reminding user, that unsaved data will be lost
+                .setPositiveButton("Tak") { _, _ -> //if user pressed yes
                     val fragment = MainMenu()
                     val transaction = fragmentManager?.beginTransaction()
 
-                    transaction?.replace(R.id.nav_controler, fragment)?.commit()
+                    transaction?.replace(R.id.nav_controler, fragment)?.commit() //move him to main menu fragment
                 }
-                .setNegativeButton("Nie") { dialog, _ ->
-                    dialog.dismiss()
+                .setNegativeButton("Nie") { dialog, _ -> //if user pressed no
+                    dialog.dismiss() //just hide notification
                 }
             val alert = builder.create()
             alert.show()
         }
 
+        //get data from previous fragment
         levelNumber = this.arguments?.getInt("levelNumber")
-        var levelName: String? = this.arguments?.getString("Transport")
+        var levelName: String? = this.arguments?.getString("levelName")
         questionsList = QuestionList.getQuestionList(levelName)
 
+        //and use it to create question
         updateLevelName()
         createQuestion()
     }
 
-    private fun updateLevelName() {
+    private fun updateLevelName() { //update level name
         val levelTitle: TextView? = view?.findViewById<TextView>(R.id.levelNumber)
 
         levelTitle?.text = "Level: $levelNumber"
     }
 
-    private fun createQuestion() {
+    private fun createQuestion() { //Get new random question
         val questionView: TextView? = view?.findViewById<TextView>(R.id.question)
 
         question = questionsList.rollQuestion()
@@ -71,24 +79,44 @@ class LevelFragment : Fragment() {
         }
     }
 
-    private fun checkAnswer() {
+    private fun checkAnswer() { //Check if answer is correct
         val userAnswer: EditText? = view?.findViewById<EditText>(R.id.inputAnswer)
-        val textView: TextView? = view?.findViewById<TextView>(R.id.levelNumber)
 
-        if(question.answer == userAnswer?.text.toString().toLowerCase()) {
-            levelNumber = levelNumber?.plus(1)
-            updateLevelName()
-            createQuestion()
-            userAnswer?.text?.clear()
+        if(question.answer == userAnswer?.text.toString().toLowerCase()) { //if answer is correct
+            levelNumber = levelNumber?.plus(1) //update level number
+            updateLevelName() //update level name
+            createQuestion() //get new question randomly
+            userAnswer?.text?.clear() //clear answer input
         }
 
         if(levelNumber?.rem(10) == 0) {
-            if(levelNumber!! > questionsList.answered) {
-                questionsList.answered = levelNumber as Int
-                if (userAnswer != null) {
-                    textView?.text = questionsList.answered.toString()
-                }
+            if(levelNumber!! > questionsList.getAnswered()) {
+                questionsList.setAnswered(levelNumber as Int)
+                saveData()
             }
         }
+    }
+
+    private fun saveData() { //Save data with Firestore Database
+        val db = FirebaseFirestore.getInstance()
+        val user = FirebaseAuth.getInstance().currentUser?.uid
+
+        val usersRef = db.collection("users").document("$user")
+
+        usersRef.get().addOnCompleteListener { task->
+            if(task.isSuccessful) {
+                val document = task.result
+
+//                if(document.exists()) { //if this user's document exists just save data
+//                    usersRef.update("transport_level",levelNumber)
+//                }
+//                else { //else create document and save data
+                val data = TaskModel(QuestionList.QuestionsTransport.getData(),
+                    QuestionList.QuestionsFood.getData())
+                db.collection("users").document("$user").set(data)
+//                }
+            }
+        }
+
     }
 }

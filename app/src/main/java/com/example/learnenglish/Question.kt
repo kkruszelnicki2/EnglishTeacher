@@ -1,18 +1,43 @@
 package com.example.learnenglish
 
-class Question (
+class Question ( //question constructor
     val question: String,
     val answer: String
 )
 
-abstract class QuestionList {
-    open var answered : Int = 0
-    abstract val questions: List<Question>
+abstract class QuestionList { //lists of questions
+    abstract fun getAnswered(): Int //get amount of answered questions
+    abstract fun setAnswered(newVal: Int) //set amount of answered questions (used for uploading data from Firestore)
 
-    abstract fun rollQuestion(): Question
+    abstract val questions: List<Question> //list of questions with answers (Question class)
 
-    class QuestionsTransport: QuestionList() {
-        override var answered : Int = 50
+    fun rollQuestion(): Question { //get random question from questions list
+        var questionNumber: Int = (0 until questions.count()).random()
+
+        return questions[questionNumber]
+    }
+
+    companion object {
+        fun getQuestionList(list: String?): QuestionList { //get certain questions list
+            if(list.equals("Transport",true)) {
+                return QuestionsTransport()
+            }
+            else if(list.equals("Food",true)) {
+                return QuestionsFood()
+            }
+
+            return QuestionsTransport() //if any bug appears, just let user play with transport questions
+        }
+    }
+
+    class QuestionsTransport: QuestionList() { //Transport related questions
+        override fun getAnswered(): Int {
+            return answered
+        }
+
+        override fun setAnswered(newVal: Int){
+            answered = newVal
+        }
 
         override val questions: List<Question> = listOf(
             Question("Pociąg","train"),
@@ -20,20 +45,44 @@ abstract class QuestionList {
             Question("Samolot","airplane")
         )
 
-        override fun rollQuestion(): Question {
-            var questionNumber: Int = (0 until questions.count()).random()
+        companion object {
+            fun loadData(newAnswered: Int) {
+                answered = newAnswered
+            }
 
-            return questions[questionNumber]
+            fun getData(): Int {
+                return answered
+            }
+
+            var answered: Int = 0
         }
     }
 
-    companion object {
-        fun getQuestionList(list: String?): QuestionList {
-            if(list.equals("Transport",true)) {
-                return QuestionsTransport()
+    class QuestionsFood: QuestionList() { //Transport related questions
+        override fun getAnswered(): Int {
+            return answered
+        }
+
+        override fun setAnswered(newVal: Int){
+            answered = newVal
+        }
+
+        override val questions: List<Question> = listOf(
+            Question("Banan","banana"),
+            Question("Jabłko","apple"),
+            Question("Ser","cheese")
+        )
+
+        companion object {
+            fun loadData(newAnswered: Int) {
+                answered = newAnswered
             }
 
-            return QuestionsTransport()
+            fun getData(): Int {
+                return answered
+            }
+
+            var answered: Int = 0
         }
     }
 }

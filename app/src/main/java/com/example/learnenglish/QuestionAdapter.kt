@@ -26,14 +26,17 @@ class QuestionAdapter(
     }
 
     override fun onBindViewHolder(holder: QuestionAdapter.QuestionViewHolder, position: Int) {
-        holder.questionIndex.text = (position * 10).toString()
+        var newIndex: Int = position * 10
+        if(newIndex == 0) newIndex += 1
+
+        holder.questionIndex.text = newIndex.toString()
 
         holder.questionIndex.setOnClickListener {
             levelClickListener.onLevelClick(it, (holder.questionIndex.text as String).toInt(), listName)
         }
     }
 
-    override fun getItemCount() = question.answered/10
+    override fun getItemCount() = question.getAnswered()/10 + 1
 
     class QuestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val questionIndex: TextView = itemView.findViewById(R.id.index)

@@ -51,6 +51,9 @@ class RegisterFragment : Fragment() {
 
                                 transaction?.replace(R.id.nav_controler, fragment)?.commit()
                             }
+                            else {
+                                error.text = "Coś poszło nie tak!"
+                            }
                         }
                     }
                     else {
@@ -75,7 +78,7 @@ class RegisterFragment : Fragment() {
         return view
     }
 
-    fun isValidEmail(email: String): Boolean {
+    private fun isValidEmail(email: String): Boolean {
         val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
         return email.matches(emailRegex.toRegex())
     }
